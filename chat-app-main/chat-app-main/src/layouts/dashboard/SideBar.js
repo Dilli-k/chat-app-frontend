@@ -16,8 +16,6 @@ import useSettings from "../../hooks/useSettings";
 import AntSwitch from "../../components/AntSwitch";
 import { faker } from "@faker-js/faker";
 import { useNavigate } from "react-router-dom";
-import { LogoutUser } from "../../redux/slices/auth";
-import { useDispatch } from "react-redux";
 
 const getPath = (index) => {
   switch (index) {
@@ -50,7 +48,6 @@ const getMenuPath = (index) => {
 };
 
 const SideBar = () => {
-  const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -209,12 +206,7 @@ const SideBar = () => {
                 >
                   <Stack
                     onClick={() => {
-                      // if idx is 2 then dispatch logout 
-                      if (idx === 2) {
-                        dispatch(LogoutUser());
-                      } else {
-                        navigate(getMenuPath(idx));
-                      }
+                      navigate(getMenuPath(idx));
                     }}
                     direction={"row"}
                     alignItems={"center"}

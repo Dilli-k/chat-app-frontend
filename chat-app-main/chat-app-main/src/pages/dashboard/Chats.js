@@ -198,13 +198,8 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import {
-  ArchiveBox,
-  CircleDashed,
-  MagnifyingGlass,
-  Users,
-} from "phosphor-react";
-import React, { useEffect, useState } from "react";
+import { ArchiveBox, CircleDashed, MagnifyingGlass } from "phosphor-react";
+import React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import { ChatList } from "../../data";
 import {
@@ -213,11 +208,6 @@ import {
   StyledInputBase,
 } from "../../components/Search";
 import ChatElement from "../../components/ChatElement";
-import Friends from "../../sections/main/Friends";
-import { socket } from "../../socket";
-import { useSelector } from "react-redux";
-
-const user_id = window.localStorage.getItem("user_id");
 
 const ScrollableStack = styled(Stack)(({ theme }) => ({
   flexGrow: 1,
@@ -230,98 +220,64 @@ const ScrollableStack = styled(Stack)(({ theme }) => ({
 }));
 
 const Chats = () => {
-  const [openDialog, setOpenDialog] = useState(false);
   const theme = useTheme();
-  const { conversations } = useSelector(
-    (state) => state.conversation.direct_chat
-  );
-
-  useEffect(() => {
-    // spell should match with the spell present in server.js in backend
-    socket.emit("get_direct_conversations", { user_id }, (data) => {
-      // data => list of conversations
-    });
-  }, []);
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
   return (
-    <>
-      <Box
-        sx={{
-          position: "relative",
-          width: 320,
-          backgroundColor:
-            theme.palette.mode === "light"
-              ? "#F8FAFF"
-              : theme.palette.background.default,
-          boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
-        }}
-      >
-        <Stack p={3} spacing={2} sx={{ height: "100vh" }}>
-          <Stack
-            direction="row"
-            alignItems={"center"}
-            justifyContent="space-between"
-          >
-            <Typography variant="h5">Chats</Typography>
-            <Stack direction={"row"} alignItems={"center"} spacing={1}>
-              <IconButton
-                onClick={() => {
-                  handleOpenDialog();
-                }}
-              >
-                <Users />
-              </IconButton>
-              <IconButton>
-                <CircleDashed />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Stack sx={{ width: "100%" }}>
-            <Search>
-              <SearchIconWrapper>
-                <MagnifyingGlass color="#709CE6" size={16} />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search..."
-                inputprops={{ "aria-label": "search" }}
-              />
-            </Search>
-          </Stack>
-          <Stack spacing={1}>
-            <Stack direction={"row"} alignItems={"center"} spacing={1.5}>
-              <ArchiveBox size={24} />
-              <Button>Archived</Button>
-            </Stack>
-            <Divider />
-          </Stack>
-          <ScrollableStack spacing={2.4}>
-            {/* <Typography variant="subtitle2" sx={{ color: "#999" }}>
-              Pinned
-            </Typography>
-            {ChatList.filter((el) => el.pinned).map((el) => {
-              return <ChatElement {...el} />;
-            })} */}
-            <Typography variant="subtitle2" sx={{ color: "#999" }}>
-              All Chats
-            </Typography>
-            {conversations
-              .filter((el) => !el.pinned)
-              .map((el) => {
-                return <ChatElement {...el} />;
-              })}
-          </ScrollableStack>
+    <Box
+      sx={{
+        position: "relative",
+        width: 320,
+        backgroundColor:
+          theme.palette.mode === "light"
+            ? "#F8FAFF"
+            : theme.palette.background.default,
+        boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+      }}
+    >
+      <Stack p={3} spacing={2} sx={{ height: "100vh" }}>
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          justifyContent="space-between"
+        >
+          <Typography variant="h5">Chats</Typography>
+          <IconButton>
+            <CircleDashed />
+          </IconButton>
         </Stack>
-      </Box>
-      {openDialog && (
-        <Friends open={openDialog} handleclose={handleCloseDialog} />
-      )}
-    </>
+        <Stack sx={{ width: "100%" }}>
+          <Search>
+            <SearchIconWrapper>
+              <MagnifyingGlass color="#709CE6" size={16} />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search..."
+              inputprops={{ "aria-label": "search" }}
+            />
+          </Search>
+        </Stack>
+        <Stack spacing={1}>
+          <Stack direction={"row"} alignItems={"center"} spacing={1.5}>
+            <ArchiveBox size={24} />
+            <Button>Archived</Button>
+          </Stack>
+          <Divider />
+        </Stack>
+        <ScrollableStack spacing={2.4}>
+          <Typography variant="subtitle2" sx={{ color: "#999" }}>
+            Pinned
+          </Typography>
+          {ChatList.filter((el) => el.pinned).map((el) => {
+            return <ChatElement {...el} />;
+          })}
+          <Typography variant="subtitle2" sx={{ color: "#999" }}>
+            All Chats
+          </Typography>
+          {ChatList.filter((el) => !el.pinned).map((el) => {
+            return <ChatElement {...el} />;
+          })}
+        </ScrollableStack>
+      </Stack>
+    </Box>
   );
 };
 
